@@ -7,6 +7,7 @@ package logsgzipprocessor
 import (
 	"context"
 	"crypto/rand"
+	"encoding/json"
 	"math/big"
 	"testing"
 
@@ -20,28 +21,48 @@ func generateLogs(numRecords, recordSize int) plog.Logs {
 	logs := plog.NewLogs()
 	rl := logs.ResourceLogs().AppendEmpty()
 	sl := rl.ScopeLogs().AppendEmpty()
-	for i := 0; i < numRecords; i++ {
+	for range numRecords {
 		lr := sl.LogRecords().AppendEmpty()
-		content, _ := randomString(recordSize)
+		content, _ := randomJSONString(recordSize)
 		lr.Body().SetStr(content)
 	}
 
 	return logs
 }
 
-func randomString(n int) (string, error) {
-	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	b := make([]byte, n)
-	lettersSize := big.NewInt(int64(len(letters)))
-	for i := range b {
-		num, err := rand.Int(rand.Reader, lettersSize)
-		if err != nil {
-			return "", err
+func randomJSONString(n int) (string, error) {
+	// Generate a random JSON object with n key-value pairs
+	const letters = "abcdefghijklmnopqrstuvwxyz"
+	obj := make(map[string]string)
+	for range n {
+		// Random key
+		keyLen := 5
+		key := make([]byte, keyLen)
+		for j := range key {
+			num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+			if err != nil {
+				return "", err
+			}
+			key[j] = letters[num.Int64()]
 		}
-		b[i] = letters[num.Int64()]
+		// Random value
+		valLen := 8
+		val := make([]byte, valLen)
+		for j := range val {
+			num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+			if err != nil {
+				return "", err
+			}
+			val[j] = letters[num.Int64()]
+		}
+		obj[string(key)] = string(val)
 	}
-
-	return string(b), nil
+	// Marshal to JSON
+	jsonBytes, err := json.Marshal(obj)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonBytes), nil
 }
 
 func BenchmarkGzipProcessor(b *testing.B) {
@@ -50,10 +71,10 @@ func BenchmarkGzipProcessor(b *testing.B) {
 		numRecords int
 		recordSize int
 	}{
-		{"SmallRecords", 100, 50},
-		{"MediumRecords", 100, 500},
-		{"LargeRecords", 100, 5000},
-		{"ManySmallRecords", 10000, 50},
+		{"SmallRecords", 100, 5},
+		{"MediumRecords", 100, 50},
+		{"LargeRecords", 100, 500},
+		{"ManySmallRecords", 10000, 5},
 	}
 
 	for _, bm := range benchmarks {

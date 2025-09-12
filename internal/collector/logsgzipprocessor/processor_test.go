@@ -9,6 +9,7 @@ import (
 	"compress/gzip"
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"sync"
 	"testing"
@@ -22,22 +23,29 @@ import (
 )
 
 var dummyInputStr = "hello world"
+var dummyJSONInputStr = `{"message": "hello world"}`
 
 func TestGzipProcessor(t *testing.T) {
 	testCases := []struct {
-		input any
-		name  string
+		input        any
+		name         string
+		expectOutput bool
 	}{
 		{
-			name:  "Test 1: string content",
+			name:         "Test 1: string content in JSON format",
+			input:        dummyJSONInputStr,
+			expectOutput: true,
+		},
+		{
+			name:  "Test 2: string content not in JSON format",
 			input: dummyInputStr,
 		},
 		{
-			name:  "Test 2: byte content",
+			name:  "Test 3: byte content",
 			input: []byte("binary data"),
 		},
 		{
-			name:  "Test 3: integer content",
+			name:  "Test 4: integer content",
 			input: 12345,
 		},
 	}
@@ -52,7 +60,6 @@ func TestGzipProcessor(t *testing.T) {
 			logRecord := logs.ResourceLogs().AppendEmpty().
 				ScopeLogs().AppendEmpty().
 				LogRecords().AppendEmpty()
-			var expectNoOutput bool
 			switch v := tc.input.(type) {
 			case string:
 				logRecord.Body().SetStr(v)
@@ -60,7 +67,6 @@ func TestGzipProcessor(t *testing.T) {
 				logRecord.Body().SetEmptyBytes().FromRaw(v)
 			case int:
 				logRecord.Body().SetInt(int64(v))
-				expectNoOutput = true
 			}
 
 			next := &consumertest.LogsSink{}
@@ -75,7 +81,7 @@ func TestGzipProcessor(t *testing.T) {
 			require.NoError(t, err, "processor failed")
 
 			// output should be gzipped
-			if expectNoOutput {
+			if !tc.expectOutput {
 				assert.Equal(t, 0, next.LogRecordCount(), "no logs should be produced")
 				return
 			}
@@ -202,8 +208,6 @@ func verifyGzippedContent(t *testing.T, gzipped []byte, input any) {
 	// check if plain text is as expected
 	switch v := input.(type) {
 	case string:
-		assert.Equal(t, v, string(plain))
-	case []byte:
-		assert.Equal(t, v, plain)
+		assert.Equal(t, fmt.Sprintf("[%v]", v), string(plain))
 	}
 }

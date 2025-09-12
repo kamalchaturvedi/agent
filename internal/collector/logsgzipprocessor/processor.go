@@ -8,8 +8,10 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 	"sync"
 
 	"go.opentelemetry.io/collector/component"
@@ -44,9 +46,9 @@ func createLogsGzipProcessor(_ context.Context,
 	return newLogsGzipProcessor(logs, settings), nil
 }
 
-// logsGzipProcessor is a custom-processor implementation for compressing individual log records into
-// gzip format. This can be used to reduce the size of log records and improve performance when processing
-// large log volumes. This processor will be used by default for agent interacting with NGINX One
+// logsGzipProcessor is a custom-processor implementation for compressing log records batch into
+// gzip format. This can be used to reduce the overall size of log records and improve performance when processing
+// large log volumes. This processor will be used for SaaS connector POC, with NGINX One
 // console (https://docs.nginx.com/nginx-one/about/).
 type logsGzipProcessor struct {
 	nextConsumer consumer.Logs
@@ -96,46 +98,30 @@ func (p *logsGzipProcessor) ConsumeLogs(ctx context.Context, ld plog.Logs) error
 }
 
 func (p *logsGzipProcessor) processLogRecords(logRecords plog.LogRecordSlice) error {
-	var errs error
-	// Filter out unsupported data types in the log before processing
-	logRecords.RemoveIf(func(lr plog.LogRecord) bool {
-		body := lr.Body()
-		// Keep only STRING or BYTES types
-		if body.Type() != pcommon.ValueTypeStr &&
-			body.Type() != pcommon.ValueTypeBytes {
-			p.settings.Logger.Debug("Skipping log record with unsupported body type", zap.Any("type", body.Type()))
-			return true
-		}
-
-		return false
-	})
-	// Process remaining valid records
-	for k := range logRecords.Len() {
-		record := logRecords.At(k)
-		body := record.Body()
-		var data []byte
-		//nolint:exhaustive // Already filtered out other types with RemoveIf
-		switch body.Type() {
-		case pcommon.ValueTypeStr:
-			data = []byte(body.Str())
-		case pcommon.ValueTypeBytes:
-			data = body.Bytes().AsRaw()
-		}
-		gzipped, err := p.gzipCompress(data)
-		if err != nil {
-			errs = multierr.Append(errs, fmt.Errorf("failed to compress log record: %w", err))
-
-			continue
-		}
-		err = record.Body().FromRaw(gzipped)
-		if err != nil {
-			errs = multierr.Append(errs, fmt.Errorf("failed to set gzipped data to log record body: %w", err))
-
-			continue
-		}
+	filtered := p.filterSupportedLogRecords(logRecords)
+	if len(filtered) == 0 {
+		return nil
 	}
+	combinedViolations := combineViolations(filtered)
+	gzipped, err := p.gzipCompress([]byte(combinedViolations))
+	if err != nil {
+		return fmt.Errorf("failed to compress log record: %w", err)
+	}
+	replaceWithGzippedLogRecord(logRecords, gzipped)
+	return nil
+}
 
-	return errs
+// filterSupportedLogRecords returns a slice of log record strings with supported types (STRING)
+func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordSlice) []string {
+	var filtered []string
+	logRecords.RemoveIf(func(l plog.LogRecord) bool {
+		if l.Body().Type() == pcommon.ValueTypeStr && json.Valid([]byte(l.Body().AsString())) {
+			filtered = append(filtered, l.Body().AsString())
+			return false
+		}
+		return true
+	})
+	return filtered
 }
 
 func (p *logsGzipProcessor) gzipCompress(data []byte) ([]byte, error) {
@@ -179,4 +165,19 @@ func (p *logsGzipProcessor) Start(ctx context.Context, _ component.Host) error {
 func (p *logsGzipProcessor) Shutdown(ctx context.Context) error {
 	p.settings.Logger.Info("Shutting down logs gzip processor")
 	return nil
+}
+
+// combineViolations combines the filtered log record strings into a single JSON array string
+func combineViolations(violations []string) string {
+	return "[" + strings.Join(violations, ",") + "]"
+}
+
+// replaceWithGzippedLogRecord empties logRecords and adds a single logRecord with gzipped content
+func replaceWithGzippedLogRecord(logRecords plog.LogRecordSlice, gzipped []byte) {
+	logRecords.RemoveIf(func(plog.LogRecord) bool { return true })
+	record := logRecords.AppendEmpty()
+	// Set timestamps to zero, or could copy from previous if needed
+	record.SetTimestamp(pcommon.NewTimestampFromTime(record.Timestamp().AsTime()))
+	record.SetObservedTimestamp(pcommon.NewTimestampFromTime(record.ObservedTimestamp().AsTime()))
+	_ = record.Body().FromRaw(gzipped)
 }

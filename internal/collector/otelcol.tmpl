@@ -297,11 +297,11 @@ service:
         - resource
         {{- end }}
         {{- end }}
-        {{- if ne .Processors.LogsGzip nil }}
-        - logsgzip
-        {{- end }}
         {{- if ne .Processors.Batch nil }}
         - batch
+        {{- end }}
+        {{- if ne .Processors.LogsGzip nil }}
+        - logsgzip
         {{- end }}
       exporters:
         {{- range $index, $otlpExporter := .Exporters.OtlpExporters }}
