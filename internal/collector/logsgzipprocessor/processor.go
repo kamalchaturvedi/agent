@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"regexp"
@@ -19,7 +20,6 @@ import (
 	"go.opentelemetry.io/collector/pdata/pcommon"
 	"go.opentelemetry.io/collector/pdata/plog"
 	"go.opentelemetry.io/collector/processor"
-	"go.uber.org/multierr"
 	"go.uber.org/zap"
 )
 
@@ -81,37 +81,45 @@ func newLogsGzipProcessor(logs consumer.Logs, settings processor.Settings) *logs
 }
 
 func (p *logsGzipProcessor) ConsumeLogs(ctx context.Context, ld plog.Logs) error {
-	var errs error
+	var err error
 	resourceLogs := ld.ResourceLogs()
+	var filtered []string
 	for i := range resourceLogs.Len() {
-		p.settings.Logger.Info("Processing resource attributes", zap.Any("attributes", resourceLogs.At(i).Resource().Attributes().AsRaw()))
 		scopeLogs := resourceLogs.At(i).ScopeLogs()
 		for j := range scopeLogs.Len() {
-			err := p.processLogRecords(scopeLogs.At(j).LogRecords())
-			if err != nil {
-				errs = multierr.Append(errs, err)
-			}
+			filtered = append(filtered, p.filterSupportedLogRecords(scopeLogs.At(j).LogRecords())...)
 		}
 	}
-	if errs != nil {
-		return fmt.Errorf("failed processing log records: %w", errs)
+	if len(filtered) == 0 {
+		return nil
+	}
+	var gzipped []byte
+	gzipped, err = p.processLogRecords(filtered)
+	if err != nil {
+		return fmt.Errorf("failed to process log records: %w", err)
+	}
+	if resourceLogs.Len() > 0 {
+		p.settings.Logger.Info("Processing resource logs and converging")
+		attributesMap := resourceLogs.At(0).Resource().Attributes()
+		resourceLogs.RemoveIf(func(rl plog.ResourceLogs) bool { return true })
+		resourceLogs.AppendEmpty()
+		resourceLogs.At(0).Resource().Attributes().FromRaw(attributesMap.AsRaw())
+		resourceLogs.At(0).ScopeLogs().AppendEmpty()
+		logRecords := resourceLogs.At(0).ScopeLogs().At(0).LogRecords()
+		replaceWithGzippedLogRecord(logRecords, gzipped)
+		p.settings.Logger.Info("Compressed log records", zap.Int("count", len(filtered)), zap.Int("gzipped_size", len(gzipped)))
 	}
 
 	return p.nextConsumer.ConsumeLogs(ctx, ld)
 }
 
-func (p *logsGzipProcessor) processLogRecords(logRecords plog.LogRecordSlice) error {
-	filtered := p.filterSupportedLogRecords(logRecords)
-	if len(filtered) == 0 {
-		return nil
-	}
+func (p *logsGzipProcessor) processLogRecords(filtered []string) ([]byte, error) {
 	combinedViolations := combineViolations(filtered)
 	gzipped, err := p.gzipCompress([]byte(combinedViolations))
 	if err != nil {
-		return fmt.Errorf("failed to compress log record: %w", err)
+		return nil, fmt.Errorf("failed to compress log record: %w", err)
 	}
-	replaceWithGzippedLogRecord(logRecords, gzipped)
-	return nil
+	return gzipped, nil
 }
 
 // filterSupportedLogRecords returns a slice of log record strings with supported types (STRING)
@@ -119,9 +127,11 @@ func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordS
 	var filtered []string
 	logRecords.RemoveIf(func(l plog.LogRecord) bool {
 		if l.Body().Type() == pcommon.ValueTypeStr {
-			// && json.Valid([]byte(l.Body().Str()))
-			filtered = append(filtered, p.syslogASMRegexp.ReplaceAllString(l.Body().Str(), ""))
-			return false
+			parsedLogInput := p.syslogASMRegexp.ReplaceAllString(l.Body().Str(), "")
+			if json.Valid([]byte(parsedLogInput)) {
+				filtered = append(filtered, parsedLogInput)
+				return false
+			}
 		}
 		p.settings.Logger.Warn("Skipping log record with unsupported body type or invalid JSON", zap.String("type", l.Body().Type().String()))
 		return true
@@ -179,7 +189,6 @@ func combineViolations(violations []string) string {
 
 // replaceWithGzippedLogRecord empties logRecords and adds a single logRecord with gzipped content
 func replaceWithGzippedLogRecord(logRecords plog.LogRecordSlice, gzipped []byte) {
-	logRecords.RemoveIf(func(plog.LogRecord) bool { return true })
 	record := logRecords.AppendEmpty()
 	// Set timestamps to zero, or could copy from previous if needed
 	record.SetTimestamp(pcommon.NewTimestampFromTime(record.Timestamp().AsTime()))
