@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -115,7 +114,8 @@ func (p *logsGzipProcessor) processLogRecords(logRecords plog.LogRecordSlice) er
 func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordSlice) []string {
 	var filtered []string
 	logRecords.RemoveIf(func(l plog.LogRecord) bool {
-		if l.Body().Type() == pcommon.ValueTypeStr && json.Valid([]byte(l.Body().Str())) {
+		if l.Body().Type() == pcommon.ValueTypeStr {
+			// && json.Valid([]byte(l.Body().Str()))
 			filtered = append(filtered, l.Body().Str())
 			return false
 		}
