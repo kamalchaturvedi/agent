@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 	"sync"
 
@@ -55,8 +56,9 @@ type logsGzipProcessor struct {
 	// Otherwise, creating a new compressor for every log record would result in frequent memory allocations
 	// and increased garbage collection overhead, especially under high-throughput workload like this one.
 	// By pooling these objects, we minimize allocation churn, reduce GC pressure, and improve overall performance.
-	pool     *sync.Pool
-	settings processor.Settings
+	pool            *sync.Pool
+	settings        processor.Settings
+	syslogASMRegexp *regexp.Regexp
 }
 
 type GzipWriter interface {
@@ -73,7 +75,8 @@ func newLogsGzipProcessor(logs consumer.Logs, settings processor.Settings) *logs
 				return gzip.NewWriter(nil)
 			},
 		},
-		settings: settings,
+		settings:        settings,
+		syslogASMRegexp: regexp.MustCompile(`^<\d+>\w{3}\s+\d+\s+\d{2}:\d{2}:\d{2}\s+[\w\-.]+ ASM:`),
 	}
 }
 
@@ -116,7 +119,7 @@ func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordS
 	logRecords.RemoveIf(func(l plog.LogRecord) bool {
 		if l.Body().Type() == pcommon.ValueTypeStr {
 			// && json.Valid([]byte(l.Body().Str()))
-			filtered = append(filtered, l.Body().Str())
+			filtered = append(filtered, p.syslogASMRegexp.ReplaceAllString(l.Body().Str(), ""))
 			return false
 		}
 		p.settings.Logger.Warn("Skipping log record with unsupported body type or invalid JSON", zap.String("type", l.Body().Type().String()))
