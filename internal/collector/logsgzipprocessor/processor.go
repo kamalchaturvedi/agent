@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"regexp"
@@ -128,10 +127,8 @@ func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordS
 	logRecords.RemoveIf(func(l plog.LogRecord) bool {
 		if l.Body().Type() == pcommon.ValueTypeStr {
 			parsedLogInput := p.syslogASMRegexp.ReplaceAllString(l.Body().Str(), "")
-			if json.Valid([]byte(parsedLogInput)) {
-				filtered = append(filtered, parsedLogInput)
-				return false
-			}
+			filtered = append(filtered, parsedLogInput)
+			return false
 		}
 		p.settings.Logger.Warn("Skipping log record with unsupported body type or invalid JSON", zap.String("type", l.Body().Type().String()))
 		return true
