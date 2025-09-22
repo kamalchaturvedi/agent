@@ -119,6 +119,7 @@ func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordS
 			filtered = append(filtered, l.Body().AsString())
 			return false
 		}
+		p.settings.Logger.Warn("Skipping log record with unsupported body type or invalid JSON", zap.String("type", l.Body().Type().String()))
 		return true
 	})
 	return filtered
