@@ -99,12 +99,13 @@ func (p *logsGzipProcessor) ConsumeLogs(ctx context.Context, ld plog.Logs) error
 	}
 	if resourceLogs.Len() > 0 {
 		p.settings.Logger.Info("Processing resource logs and converging")
-		attributesMap := resourceLogs.At(0).Resource().Attributes()
-		resourceLogs.RemoveIf(func(rl plog.ResourceLogs) bool { return true })
-		resourceLogs.AppendEmpty()
-		resourceLogs.At(0).Resource().Attributes().FromRaw(attributesMap.AsRaw())
-		resourceLogs.At(0).ScopeLogs().AppendEmpty()
-		logRecords := resourceLogs.At(0).ScopeLogs().At(0).LogRecords()
+		// Remove all but the first element from resourceLogs
+		resourceLogs.RemoveIf(func(rl plog.ResourceLogs) bool { return resourceLogs.At(0) != rl })
+		// Clear all scope logs from the first resource log
+		rl := resourceLogs.At(0)
+		sls := rl.ScopeLogs()
+		sls.RemoveIf(func(sl plog.ScopeLogs) bool { return sls.At(0) != sl })
+		logRecords := sls.At(0).LogRecords()
 		replaceWithGzippedLogRecord(logRecords, gzipped)
 		p.settings.Logger.Info("Compressed log records", zap.Int("count", len(filtered)), zap.Int("gzipped_size", len(gzipped)))
 	}
