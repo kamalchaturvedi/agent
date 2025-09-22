@@ -84,6 +84,7 @@ func (p *logsGzipProcessor) ConsumeLogs(ctx context.Context, ld plog.Logs) error
 	var errs error
 	resourceLogs := ld.ResourceLogs()
 	for i := range resourceLogs.Len() {
+		p.settings.Logger.Info("Processing resource attributes", zap.Any("attributes", resourceLogs.At(i).Resource().Attributes().AsRaw()))
 		scopeLogs := resourceLogs.At(i).ScopeLogs()
 		for j := range scopeLogs.Len() {
 			err := p.processLogRecords(scopeLogs.At(j).LogRecords())

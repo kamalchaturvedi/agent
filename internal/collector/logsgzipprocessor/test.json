@@ -1,212 +1,214 @@
-{
-    "id": "15472131987999527810",
-    "violations": [
-        {
-            "enforcementState": {
-                "isBlocked": true,
-                "isAlarmed": true,
-                "isInStaging": false,
-                "isLearned": false,
-                "isLikelyFalsePositive": false,
-                "attackType": [
-                    {
-                        "name": "Cross Site Scripting (XSS)"
-                    }
-                ]
+[
+    {
+        "id": "9705607748472374293",
+        "violations": [
+            {
+                "enforcementState": {
+                    "isBlocked": true,
+                    "isAlarmed": true,
+                    "isInStaging": false,
+                    "isLearned": false,
+                    "isLikelyFalsePositive": false,
+                    "attackType": [
+                        {
+                            "name": "Cross Site Scripting (XSS)"
+                        }
+                    ]
+                },
+                "violation": {
+                    "name": "VIOL_ATTACK_SIGNATURE"
+                },
+                "signature": {
+                    "name": "XSS script tag (Parameter)",
+                    "signatureId": 200000098,
+                    "accuracy": "high",
+                    "risk": "high",
+                    "hasCve": false,
+                    "stagingCertificationDatetime": "1970-01-01T00:00:00Z",
+                    "lastUpdateTime": "2023-11-02T19:36:54Z"
+                },
+                "snippet": {
+                    "buffer": "YT08c2NyaXB0LWFiYz4=",
+                    "offset": 2,
+                    "length": 7
+                },
+                "policyEntity": {
+                    "parameters": [
+                        {
+                            "name": "*",
+                            "level": "global",
+                            "type": "wildcard"
+                        }
+                    ]
+                },
+                "observedEntity": {
+                    "name": "YQ==",
+                    "value": "PHNjcmlwdC1hYmM+",
+                    "location": "query"
+                }
             },
-            "violation": {
-                "name": "VIOL_ATTACK_SIGNATURE"
+            {
+                "enforcementState": {
+                    "isBlocked": false,
+                    "isAlarmed": true,
+                    "isLearned": false,
+                    "attackType": [
+                        {
+                            "name": "Abuse of Functionality"
+                        }
+                    ]
+                },
+                "violation": {
+                    "name": "VIOL_PARAMETER_VALUE_METACHAR"
+                },
+                "policyEntity": {
+                    "parameters": [
+                        {
+                            "name": "*",
+                            "level": "global",
+                            "type": "wildcard"
+                        }
+                    ]
+                },
+                "observedEntity": {
+                    "name": "YQ==",
+                    "value": "PHNjcmlwdC1hYmM+",
+                    "location": "query"
+                },
+                "metachar": "0x3c",
+                "charsetType": "parameter-value"
             },
-            "signature": {
-                "name": "XSS script tag (Parameter)",
-                "signatureId": 200000098,
-                "accuracy": "high",
-                "risk": "high",
-                "hasCve": false,
-                "stagingCertificationDatetime": "1970-01-01T00:00:00Z",
-                "lastUpdateTime": "2023-11-02T19:36:54Z"
+            {
+                "enforcementState": {
+                    "isBlocked": false,
+                    "isAlarmed": true,
+                    "isLearned": false,
+                    "attackType": [
+                        {
+                            "name": "Abuse of Functionality"
+                        }
+                    ]
+                },
+                "violation": {
+                    "name": "VIOL_PARAMETER_VALUE_METACHAR"
+                },
+                "policyEntity": {
+                    "parameters": [
+                        {
+                            "name": "*",
+                            "level": "global",
+                            "type": "wildcard"
+                        }
+                    ]
+                },
+                "observedEntity": {
+                    "name": "YQ==",
+                    "value": "PHNjcmlwdC1hYmM+",
+                    "location": "query"
+                },
+                "metachar": "0x3e",
+                "charsetType": "parameter-value"
             },
-            "snippet": {
-                "buffer": "YT08c2NyaXB0LWFiYz4=",
-                "offset": 2,
-                "length": 7
+            {
+                "enforcementState": {
+                    "isBlocked": false,
+                    "isAlarmed": true,
+                    "isLearned": true,
+                    "attackType": [
+                        {
+                            "name": "Non-browser Client"
+                        }
+                    ]
+                },
+                "violation": {
+                    "name": "VIOL_BOT_CLIENT"
+                },
+                "botSignature": {
+                    "name": "curl",
+                    "category": "HTTP Library",
+                    "botClass": "Untrusted Bot"
+                }
             },
-            "policyEntity": {
-                "parameters": [
-                    {
-                        "name": "*",
-                        "level": "global",
-                        "type": "wildcard"
-                    }
-                ]
-            },
-            "observedEntity": {
-                "name": "YQ==",
-                "value": "PHNjcmlwdC1hYmM+",
-                "location": "query"
-            }
-        },
-        {
-            "enforcementState": {
-                "isBlocked": false,
-                "isAlarmed": true,
-                "isLearned": false,
-                "attackType": [
-                    {
-                        "name": "Abuse of Functionality"
-                    }
-                ]
-            },
-            "violation": {
-                "name": "VIOL_PARAMETER_VALUE_METACHAR"
-            },
-            "policyEntity": {
-                "parameters": [
-                    {
-                        "name": "*",
-                        "level": "global",
-                        "type": "wildcard"
-                    }
-                ]
-            },
-            "observedEntity": {
-                "name": "YQ==",
-                "value": "PHNjcmlwdC1hYmM+",
-                "location": "query"
-            },
-            "metachar": "0x3c",
-            "charsetType": "parameter-value"
-        },
-        {
-            "enforcementState": {
-                "isBlocked": false,
-                "isAlarmed": true,
-                "isLearned": false,
-                "attackType": [
-                    {
-                        "name": "Abuse of Functionality"
-                    }
-                ]
-            },
-            "violation": {
-                "name": "VIOL_PARAMETER_VALUE_METACHAR"
-            },
-            "policyEntity": {
-                "parameters": [
-                    {
-                        "name": "*",
-                        "level": "global",
-                        "type": "wildcard"
-                    }
-                ]
-            },
-            "observedEntity": {
-                "name": "YQ==",
-                "value": "PHNjcmlwdC1hYmM+",
-                "location": "query"
-            },
-            "metachar": "0x3e",
-            "charsetType": "parameter-value"
-        },
-        {
-            "enforcementState": {
-                "isBlocked": false,
-                "isAlarmed": true,
-                "isLearned": true,
-                "attackType": [
-                    {
-                        "name": "Non-browser Client"
-                    }
-                ]
-            },
-            "violation": {
-                "name": "VIOL_BOT_CLIENT"
-            },
-            "botSignature": {
-                "name": "curl",
-                "category": "HTTP Library",
-                "botClass": "Untrusted Bot"
-            }
-        },
-        {
-            "enforcementState": {
-                "isBlocked": false,
-                "isAlarmed": true,
-                "attackType": [
-                    {
-                        "name": "HTTP Parser Attack"
-                    }
-                ]
-            },
-            "violation": {
-                "name": "VIOL_HTTP_PROTOCOL"
-            },
-            "policyEntity": {
-                "blocking-settings": {
-                    "http-protocols": {
-                        "description": "Host header contains IP address"
+            {
+                "enforcementState": {
+                    "isBlocked": false,
+                    "isAlarmed": true,
+                    "attackType": [
+                        {
+                            "name": "HTTP Parser Attack"
+                        }
+                    ]
+                },
+                "violation": {
+                    "name": "VIOL_HTTP_PROTOCOL"
+                },
+                "policyEntity": {
+                    "blocking-settings": {
+                        "http-protocols": {
+                            "description": "Host header contains IP address"
+                        }
                     }
                 }
-            }
-        },
-        {
-            "enforcementState": {
-                "isBlocked": true,
-                "isAlarmed": true,
-                "attackType": [
-                    {
-                        "name": "Other Application Activity"
-                    }
-                ]
-            },
-            "violation": {
-                "name": "VIOL_RATING_THREAT"
-            }
-        }
-    ],
-    "enforcementAction": "block",
-    "method": "GET",
-    "clientPort": 43436,
-    "clientIp": "127.0.0.1",
-    "host": "ip-172-16-0-4",
-    "responseCode": 0,
-    "serverIp": "0.0.0.0",
-    "serverPort": 8090,
-    "requestStatus": "blocked",
-    "url": "Lw==",
-    "virtualServerName": "1-localhost:1-/",
-    "geolocationCountryCode": "N/A",
-    "enforcementState": {
-        "isBlocked": true,
-        "isAlarmed": true,
-        "rating": 4,
-        "attackType": [
-            {
-                "name": "Non-browser Client"
             },
             {
-                "name": "Abuse of Functionality"
-            },
-            {
-                "name": "Cross Site Scripting (XSS)"
-            },
-            {
-                "name": "Other Application Activity"
-            },
-            {
-                "name": "HTTP Parser Attack"
+                "enforcementState": {
+                    "isBlocked": true,
+                    "isAlarmed": true,
+                    "attackType": [
+                        {
+                            "name": "Other Application Activity"
+                        }
+                    ]
+                },
+                "violation": {
+                    "name": "VIOL_RATING_THREAT"
+                }
             }
         ],
-        "ratingIncludingViolationsInStaging": 4,
-        "stagingCertificationDatetime": "1970-01-01T00:00:00Z"
-    },
-    "requestDatetime": "2025-09-22T07:30:23Z",
-    "rawRequest": {
-        "actualSize": 92,
-        "httpRequest": "R0VUIC8/YT08c2NyaXB0LWFiYz4gSFRUUC8xLjENCkhvc3Q6IDEyNy4wLjAuMTo4MDkwDQpVc2VyLUFnZW50OiBjdXJsLzguNS4wDQpBY2NlcHQ6ICovKg0KDQo=",
-        "isTruncated": false
-    },
-    "requestPolicy": {
-        "fullPath": "app_protect_strict_policy"
+        "enforcementAction": "block",
+        "method": "GET",
+        "clientPort": 39406,
+        "clientIp": "127.0.0.1",
+        "host": "ip-172-16-0-4",
+        "responseCode": 0,
+        "serverIp": "0.0.0.0",
+        "serverPort": 8090,
+        "requestStatus": "blocked",
+        "url": "Lw==",
+        "virtualServerName": "1-localhost:1-/",
+        "geolocationCountryCode": "N/A",
+        "enforcementState": {
+            "isBlocked": true,
+            "isAlarmed": true,
+            "rating": 4,
+            "attackType": [
+                {
+                    "name": "Non-browser Client"
+                },
+                {
+                    "name": "Abuse of Functionality"
+                },
+                {
+                    "name": "Cross Site Scripting (XSS)"
+                },
+                {
+                    "name": "Other Application Activity"
+                },
+                {
+                    "name": "HTTP Parser Attack"
+                }
+            ],
+            "ratingIncludingViolationsInStaging": 4,
+            "stagingCertificationDatetime": "1970-01-01T00:00:00Z"
+        },
+        "requestDatetime": "2025-09-22T08:01:07Z",
+        "rawRequest": {
+            "actualSize": 92,
+            "httpRequest": "R0VUIC8/YT08c2NyaXB0LWFiYz4gSFRUUC8xLjENCkhvc3Q6IDEyNy4wLjAuMTo4MDkwDQpVc2VyLUFnZW50OiBjdXJsLzguNS4wDQpBY2NlcHQ6ICovKg0KDQo=",
+            "isTruncated": false
+        },
+        "requestPolicy": {
+            "fullPath": "app_protect_strict_policy"
+        }
     }
-}
+]
