@@ -115,8 +115,8 @@ func (p *logsGzipProcessor) processLogRecords(logRecords plog.LogRecordSlice) er
 func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordSlice) []string {
 	var filtered []string
 	logRecords.RemoveIf(func(l plog.LogRecord) bool {
-		if l.Body().Type() == pcommon.ValueTypeStr && json.Valid([]byte(l.Body().AsString())) {
-			filtered = append(filtered, l.Body().AsString())
+		if l.Body().Type() == pcommon.ValueTypeStr && json.Valid([]byte(l.Body().Str())) {
+			filtered = append(filtered, l.Body().Str())
 			return false
 		}
 		p.settings.Logger.Warn("Skipping log record with unsupported body type or invalid JSON", zap.String("type", l.Body().Type().String()))
