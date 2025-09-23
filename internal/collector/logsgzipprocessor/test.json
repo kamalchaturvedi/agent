@@ -74,16 +74,32 @@
                     "scope": {},
                     "log_records": [
                         {
-                            "time_unix_nano": 1758665736000000000,
-                            "observed_time_unix_nano": 1758665736412118430,
+                            "time_unix_nano": 1758668447000000000,
+                            "observed_time_unix_nano": 1758668447128509627,
                             "severity_number": 18,
                             "severity_text": "crit",
                             "body": {
                                 "Value": {
-                                    "StringValue": "<130>Sep 23 22:15:36 ip-172-16-0-4 ASM:{\"id\":\"9363296764734872603\",\"violations\":[{\"enforcementState\":{\"isBlocked\":true,\"isAlarmed\":true,\"isInStaging\":false,\"isLearned\":false,\"isLikelyFalsePositive\":false,\"attackType\":[{\"name\":\"Cross Site Scripting (XSS)\"}]},\"violation\":{\"name\":\"VIOL_ATTACK_SIGNATURE\"},\"signature\":{\"name\":\"XSS script tag (Parameter)\",\"signatureId\":200000098,\"accuracy\":\"high\",\"risk\":\"high\",\"hasCve\":false,\"stagingCertificationDatetime\":\"1970-01-01T00:00:00Z\",\"lastUpdateTime\":\"2023-11-02T19:36:54Z\"},\"snippet\":{\"buffer\":\"YT08c2NyaXB0LWlBbVg+\",\"offset\":2,\"length\":7},\"policyEntity\":{\"parameters\":[{\"name\":\"*\",\"level\":\"global\",\"type\":\"wildcard\"}]},\"observedEntity\":{\"name\":\"YQ==\",\"value\":\"PHNjcmlwdC1pQW1YPg==\",\"location\":\"query\"}},{\"enforcementState\":{\"isBlocked\":false,\"isAlarmed\":true,\"isLearned\":false,\"attackType\":[{\"name\":\"Abuse of Functionality\"}]},\"violation\":{\"name\":\"VIOL_PARAMETER_VALUE_METACHAR\"},\"policyEntity\":{\"parameters\":[{\"name\":\"*\",\"level\":\"global\",\"type\":\"wildcard\"}]},\"observedEntity\":{\"name\":\"YQ==\",\"value\":\"PHNjcmlwdC1pQW1YPg==\",\"location\":\"query\"},\"metachar\":\"0x3c\",\"charsetType\":\"parameter-value\"},{\"enforcementState\":{\"isBlocked\":false,\"isAlarmed\":true,\"isLearned\":false,\"attackType\":[{\"name\":\"Abuse of Functionality\"}]},\"violation\":{\"name\":\"VIOL_PARAMETER_VALUE_METACHAR\"},\"policyEntity\":{\"parameters\":[{\"name\":\"*\",\"level\":\"global\",\"type\":\"wildcard\"}]},\"observedEntity\":{\"name\":\"YQ==\",\"value\":\"PHNjcmlwdC1pQW1YPg==\",\"location\":\"query\"},\"metachar\":\"0x3e\",\"charsetType\":\"parameter-value\"},{\"enforcementState\":{\"isBlocked\":false,\"isAlarmed\":true,\"isLearned\":true,\"attackType\":[{\"name\":\"Non-browser Client\"}]},\"violation\":{\"name\":\"VIOL_BOT_CLIENT\"},\"botSignature\":{\"name\":\"curl\",\"category\":\"HTTP Library\",\"botClass\":\"Untrusted Bot\"}},{\"enforcementState\":{\"isBlocked\":false,\"isAlarmed\":true,\"attackType\":[{\"name\":\"HTTP Parser Attack\"}]},\"violation\":{\"name\":\"VIOL_HTTP_PROTOCOL\"},\"policyEntity\":{\"blocking-settings\":{\"http-protocols\":{\"description\":\"Host header contains IP address\"}}}},{\"enforcementState\":{\"isBlocked\":true,\"isAlarmed\":true,\"attackType\":[{\"name\":\"Other Application Activity\"}]},\"violation\":{\"name\":\"VIOL_RATING_THREAT\"}}],\"enforcementAction\":\"block\",\"method\":\"GET\",\"clientPort\":36974,\"clientIp\":\"127.0.0.1\",\"host\":\"ip-172-16-0-4\",\"responseCode\":0,\"serverIp\":\"0.0.0.0\",\"serverPort\":8090,\"requestStatus\":\"blocked\",\"url\":\"Lw==\",\"virtualServerName\":\"1-localhost:1-/\",\"geolocationCountryCode\":\"N/A\",\"enforcementState\":{\"isBlocked\":true,\"isAlarmed\":true,\"rating\":4,\"attackType\":[{\"name\":\"Non-browser Client\"},{\"name\":\"Abuse of Functionality\"},{\"name\":\"Cross Site Scripting (XSS)\"},{\"name\":\"Other Application Activity\"},{\"name\":\"HTTP Parser Attack\"}],\"ratingIncludingViolationsInStaging\":4,\"stagingCertificationDatetime\":\"1970-01-01T00:00:00Z\"},\"requestDatetime\":\"2025-09-23T22:15:35Z\",\"rawRequest\":{\"actualSize\":93,\"httpRequest\":\"R0VUIC8/YT08c2NyaXB0LWlBbVg+IEhUVFAvMS4xDQpIb3N0OiAxMjcuMC4wLjE6ODA5MA0KVXNlci1BZ2VudDogY3VybC84LjUuMA0KQWNjZXB0OiAqLyoNCg0K\",\"isTruncated\":false},\"requestPolicy\":{\"fullPath\":\"app_protect_strict_policy\"}}app_protect_strict_policy\"}}tect_strict_policy\"}}ect_strict_policy\"}}"
+                                    "BytesValue": "H4sIAAAAAAAA/+xXe2/aSBD/Ktb81V7t1jbmZSl/GEMaLmBehjyqCi3rxWzieN3dNYRWfPfTmpCgO9r0pep6RxQJeXbGnsdvZuf37hPQCFyolyolu16pVpxqyalVy1a5BDosKUuQpCwV4L77BCSdM47JHUnlSCJJwP0EVDQShm9JBK7kOdGBCi9B/G5f0E5HEsU0jcGdo0QUsg5BPFVKTxJ6S5L1qXrsM0ElXZLHUyQlwrfhOiOFIym6I+CCz5kQ2ohKoo0wp5mkaay9uByNXsLm/WbPfeXog82k3etMvTD0/PPpqP028MLxsAUbHQSNUyRzTvaUL0cjTRRv1iSKtRd9xNEdkYS/hD2DdgSubRZ/9ZoOCOOcI7wGFxY0XoAOnIrbp6cFEv5eaGKbGp9wSecUF/42kSSSFi5Y9appmJZhWqFpusX/NeiQICHHWYQkCbd6tmmXDMsyTDu06m6p4pad6yKslGYZkSqoWT6fEw4uXIVmDdvBGl02zM5F0phNFsFg7LwCHdh8LpS2rUNC0lguwK1udMhYQvG6lUoq1+pV2S4RYr8efyjHyJIk4EKcsBlKQAdZFA1WNIkw4tG2MmwmCF+S6OmND6+4GpycKOChJFeP/bPgBt8lq8i3ssGFdRWOT3v9uFBJGH6oLXzICV/DZqM/C9FHsP0Do3/H42HEebNcEI3NtdM8xerrKFH+fxltfW/odVthazideJ1xa9pthZ5/5g3hd0msDndEIrxACjzmfQmDDupJELlN0JPbxvYDx1L8olKQX1SKreBwJQKWGjPOVoJwzU8oSeUzVWj0wqnfabeCUAU0Y3J0YPbinKvUYiRJzLiapmdh2Nc6dMYRX0Nh5ydICHBhnEqeC0kircHkDw2CwxEWX+6rLHPNKzSeiVAZTPvDXtjze51D4JopR2gaG4JIdW0JJVxImRkZZ5JhlhSSiGyvny0GzpiQ2oKgiHANs1Qimgqt3ddQFHEiBGw2XxP6Z67pw5H35ELFnGXJw9WkeVjS5fOdNvTCdvB2Gp4NW14Im817fd8vDz+EVOQBClQvmFpE3rZCVfUCRn3GJbhOtVKu7UTtTN2JdvW1+dp8banblAkJLtDMsKq2YVUM03DUlUtExlJBfBYRcE0dil7khblZGJuwE24/UzPrprL7kBNR5C0XO/9IBDooOLrQWW17l3KZo2RU2AfbsC1DtWuiHHIt4w3oEBO262Cf5ank6607ELzxQP/OOnEki03K+ZZ21J8dm/pXbVX6VwFD/3Lj7GJopzjJI5rGk8c1c29TdL5vNdo81nBP0zbtsmHWDbsU2iWl6VTUEsXRarjVValHuCgp/UjArVf0ohsfj2FoTsZtv/bmc7tTu7UYT069ZXfk3DcHWXtWCswe9e67Nzjv+s6qc9Oq9JpeueuZ55PLIMHUalzbkzxqsviqNFnP/JrTuRnn6nxwEdxcXzaU/YfOmgV+bJ6DgkLI81QNxN0Aewq2X8wXFcY8T5I+UosboCybqnFCsJwKySmW0+0cgs1m93vw8JBM/wxTqFSOTOH/xRRC5+R3YAqtV0eW8KuSemQI/8oyHNnBkR3899lB1T6ygyM7+JnsoPYMOyh/EzsInXh0OhyP/dp956YV+LeLJS4NKu1max2sFTPw8m7InG7zdtUcZBNsT9ad8Wl6fVE2e7RxE13+KTof4zwYOeq8cWUHCT4bVNo+W57H5nlzwE5+Njv4Iabw/q8AAAD//38hhylVGAAA"
                                 }
                             },
                             "attributes": [
+                                {
+                                    "key": "appname",
+                                    "value": {
+                                        "Value": {
+                                            "StringValue": "ASM"
+                                        }
+                                    }
+                                },
+                                {
+                                    "key": "facility",
+                                    "value": {
+                                        "Value": {
+                                            "IntValue": 16
+                                        }
+                                    }
+                                },
                                 {
                                     "key": "hostname",
                                     "value": {
@@ -99,31 +115,8 @@
                                             "IntValue": 130
                                         }
                                     }
-                                },
-                                {
-                                    "key": "facility",
-                                    "value": {
-                                        "Value": {
-                                            "IntValue": 16
-                                        }
-                                    }
-                                },
-                                {
-                                    "key": "appname",
-                                    "value": {
-                                        "Value": {
-                                            "StringValue": "ASM"
-                                        }
-                                    }
                                 }
                             ]
-                        },
-                        {
-                            "body": {
-                                "Value": {
-                                    "BytesValue": "H4sIAAAAAAAA/+xWb2/aSBP/Kta8ap/Hbtc2gWCpL4xDG1QCBAxNUlVoWS9mk43X3V0n5Sp/99OuQ4LuuCbXkyqddIg3Ozuznt/Mb/58/g4sgwi6YTsMuu1Ou9UJW8edoI1CcOGOCY41E4WC6PN3oMVaSEJvaaFnGmsK0XdgqscFuaEZRFpW1AWmYo7l7b5gUMw0zlmRQ7TGXFnZkGJZGKUnCbuhfPveHCdCMc3u6OMt1hqTm3RbUutIgW8pRJBIoZQzY5o6MyJZqVmRO68uZrPXUH+p99w3jj7YLAbj4TJO0zj5uJwNPozidD7tQ+2CYnmBdSXpnvLFbOYo+7Kjce68mmCJb6mm8jXsGQwyiAJkf91jFzAhlcRkCxFsWL4BFyRTN0+nDVbJHjTVhCahUrM1I9bfE6ypZtYFv9tBHvI95KcIRfZ/BS5wrPS8zLCmaaMXoCD0fN9DQep3o7AdHbWuLKyClSXVBtSqWq+phAguU3RMgtEWX/TQ8BPvrRb5/8EFsV4roxm4wGmR6w1EndqFUnBGtv1CM701z5S7IKj9XPzPOEXvKIcIci5WmIML2iYM7hnPCJZZkxWxUlTe0ezpxYcnLs/fvTOkw7wyx8np6Jrc8vss8cvzT/7lJLfXXJCHnMLXisot1LX7LDUfSfYnbv6Rh4eZFq8qRR2xdt5XBTFfx9z4/mOWTeJpfNZP+9PlIh7O+8uzfhonp/EU/g1BdeGWakw22BAGfQsJuGBOiuomOE8ue83j/6XhF6SB/qI0NILDWRiJwltJca+odBLOaKGfyUBvnC6T4aA/Sg2gldCzA72WVNKElWBNcyFN9zxN04kzZCuJ5RasXcKxUhDBvNCyUppmTk/of9QADiO0X56YKEsnthrPIDQGy8l0nI6T8fAQsVbGEVbknqLajCllhButS6+UQgsiuJVktBk3DQdOhdLOhuKMSoeIQmNWKGcwcXCWSaoU1PVLoP/FWD6MfKw3BnNZ8odR5MREs7vnq2wap4PRh2V6Ou3HKdT1F3ffr5g8QLJxAMvqjTCLx4d+arJuaTQRUkMUtrud1k40KM0MDDpv0Bv0xjfTUygNEbDS8zuB57c95LXMiKWqFIWiicgoRMgFW4fSmiNrjGAnbD5zjLrI2H2tqLJxq9TOP5qBC4aOEQzvm7plUleYz6z9qIHte6ZcuXEo8r234EJOxa6CE1EVWm4bd2D0Ngb3J/MksbabU+vvlKP7bMt0X7RFuS8ihvvjwtlhGBSEVxkr8sXjWrm3GbZ+bhWqH3O4pxmg4MhDXS8I0yCI/KMoPDJLk8T300bXhB4Tm1L2G4WoG7q2Gh+vYYoW80Fy/PbQrjTob+aL9/Hd2az17eS8HKzCERqz+NvZNanOktb98LrfHp/ER2cx+ri4GHHC/N5VsKiyE5FfhovtKjluDa/nlbk//zS6vrroGfuvw60YJTn6CIYGqawK0wx3zesJ6MT2FgNhXXE+wWZRA1yWS9NKKNFLpSUjetn0IKjrH90dFB6Sffk9AAD//65NdDorDAAA"
-                                }
-                            }
                         }
                     ]
                 }

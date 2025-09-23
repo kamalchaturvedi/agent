@@ -1,6 +1,6 @@
 [
     {
-        "id": "9363296764734872603",
+        "id": "9363296764734875153",
         "violations": [
             {
                 "enforcementState": {
@@ -28,7 +28,7 @@
                     "lastUpdateTime": "2023-11-02T19:36:54Z"
                 },
                 "snippet": {
-                    "buffer": "YT08c2NyaXB0LWlBbVg+",
+                    "buffer": "YT08c2NyaXB0LWlBbVhNQU4+",
                     "offset": 2,
                     "length": 7
                 },
@@ -43,7 +43,7 @@
                 },
                 "observedEntity": {
                     "name": "YQ==",
-                    "value": "PHNjcmlwdC1pQW1YPg==",
+                    "value": "PHNjcmlwdC1pQW1YTUFOPg==",
                     "location": "query"
                 }
             },
@@ -72,7 +72,7 @@
                 },
                 "observedEntity": {
                     "name": "YQ==",
-                    "value": "PHNjcmlwdC1pQW1YPg==",
+                    "value": "PHNjcmlwdC1pQW1YTUFOPg==",
                     "location": "query"
                 },
                 "metachar": "0x3c",
@@ -103,7 +103,7 @@
                 },
                 "observedEntity": {
                     "name": "YQ==",
-                    "value": "PHNjcmlwdC1pQW1YPg==",
+                    "value": "PHNjcmlwdC1pQW1YTUFOPg==",
                     "location": "query"
                 },
                 "metachar": "0x3e",
@@ -167,7 +167,7 @@
         ],
         "enforcementAction": "block",
         "method": "GET",
-        "clientPort": 36974,
+        "clientPort": 47658,
         "clientIp": "127.0.0.1",
         "host": "ip-172-16-0-4",
         "responseCode": 0,
@@ -201,14 +201,19 @@
             "ratingIncludingViolationsInStaging": 4,
             "stagingCertificationDatetime": "1970-01-01T00:00:00Z"
         },
-        "requestDatetime": "2025-09-23T22:15:35Z",
+        "requestDatetime": "2025-09-23T23:00:46Z",
         "rawRequest": {
-            "actualSize": 93,
-            "httpRequest": "R0VUIC8/YT08c2NyaXB0LWlBbVg+IEhUVFAvMS4xDQpIb3N0OiAxMjcuMC4wLjE6ODA5MA0KVXNlci1BZ2VudDogY3VybC84LjUuMA0KQWNjZXB0OiAqLyoNCg0K",
+            "actualSize": 96,
+            "httpRequest": "R0VUIC8/YT08c2NyaXB0LWlBbVhNQU4+IEhUVFAvMS4xDQpIb3N0OiAxMjcuMC4wLjE6ODA5MA0KVXNlci1BZ2VudDogY3VybC84LjUuMA0KQWNjZXB0OiAqLyoNCg0K",
             "isTruncated": false
         },
         "requestPolicy": {
             "fullPath": "app_protect_strict_policy"
         }
-    }
-]
+    }olicy"}}tect_strict_policy"
+}
+}ect_strict_policy"}},{"id":"9363296764734875663","violations":[{"enforcementState":{"isBlocked":true,"isAlarmed":true,"isInStaging":false,"isLearned":false,"isLikelyFalsePositive":false,"attackType":[{"name":"Cross Site Scripting (XSS)"}]},"violation":{"name":"VIOL_ATTACK_SIGNATURE"},"signature":{"name":"XSS script tag (Parameter)","signatureId":200000098,"accuracy":"high","risk":"high","hasCve":false,"stagingCertificationDatetime":"1970-01-01T00: 00: 00Z","lastUpdateTime":"2023-11-02T19: 36: 54Z"},"snippet":{"buffer":"YT08c2NyaXB0LWlBbVhNQT4=","offset":2,"length":7},"policyEntity":{"parameters":[{"name":"*","level":"global","type":"wildcard"}]},"observedEntity":{"name":"YQ==","value":"PHNjcmlwdC1pQW1YTUE+","location":"query"}},{"enforcementState":{"isBlocked":false,"isAlarmed":true,"isLearned":false,"attackType":[{"name":"Abuse of Functionality"}]},"violation":{"name":"VIOL_PARAMETER_VALUE_METACHAR"},"policyEntity":{"parameters":[{"name":"*","level":"global","type":"wildcard"}]},"observedEntity":{"name":"YQ==","value":"PHNjcmlwdC1pQW1YTUE+","location":"query"},"metachar":"0x3c","charsetType":"parameter-value"},{"enforcementState":{"isBlocked":false,"isAlarmed":true,"isLearned":false,"attackType":[{"name":"Abuse of Functionality"}]},"violation":{"name":"VIOL_PARAMETER_VALUE_METACHAR"},"policyEntity":{"parameters":[{"name":"*","level":"global","type":"wildcard"}]},"observedEntity":{"name":"YQ==","value":"PHNjcmlwdC1pQW1YTUE+","location":"query"},"metachar":"0x3e","charsetType":"parameter-value"},{"enforcementState":{"isBlocked":false,"isAlarmed":true,"isLearned":true,"attackType":[{"name":"Non-browser Client"}]},"violation":{"name":"VIOL_BOT_CLIENT"},"botSignature":{"name":"curl","category":"HTTP Library","botClass":"Untrusted Bot"}},{"enforcementState":{"isBlocked":false,"isAlarmed":true,"attackType":[{"name":"HTTP Parser Attack"}]},"violation":{"name":"VIOL_HTTP_PROTOCOL"},"policyEntity":{"blocking-settings":{"http-protocols":{"description":"Host header contains IP address"}}}},{"enforcementState":{"isBlocked":true,"isAlarmed":true,"attackType":[{"name":"Other Application Activity"}]},"violation":{"name":"VIOL_RATING_THREAT"}}],"enforcementAction":"block","method":"GET","clientPort":47672,"clientIp":"127.0.0.1","host":"ip-172-16-0-4","responseCode":0,"serverIp":"0.0.0.0","serverPort":8090,"requestStatus":"blocked","url":"Lw==","virtualServerName":"1-localhost: 1-/","geolocationCountryCode":"N/A","enforcementState":{"isBlocked":true,"isAlarmed":true,"rating":4,"attackType":[{"name":"Non-browser Client"},{"name":"Abuse of Functionality"},{"name":"Cross Site Scripting (XSS)"},{"name":"Other Application Activity"},{"name":"HTTP Parser Attack"}],"ratingIncludingViolationsInStaging":4,"stagingCertificationDatetime":"1970-01-01T00: 00: 00Z"},"requestDatetime":"2025-09-23T23: 00: 48Z","rawRequest":{"actualSize":95,"httpRequest":"R0VUIC8/YT08c2NyaXB0LWlBbVhNQT4gSFRUUC8xLjENCkhvc3Q6IDEyNy4wLjAuMTo4MDkwDQpVc2VyLUFnZW50OiBjdXJsLzguNS4wDQpBY2NlcHQ6ICovKg0KDQo=","isTruncated":false},"requestPolicy":{"fullPath":"app_protect_strict_policy"}}ct_policy"
+}
+}olicy"}}tect_strict_policy"
+}
+}ect_strict_policy"}}]

@@ -98,6 +98,7 @@ func (p *logsGzipProcessor) ConsumeLogs(ctx context.Context, ld plog.Logs) error
 		return fmt.Errorf("failed to process log records: %w", err)
 	}
 	if resourceLogs.Len() > 0 {
+		p.settings.Logger.Info("Final filtered log record value", zap.Strings("logs", filtered))
 		p.settings.Logger.Info("Processing resource logs and converging")
 		// Remove all but the first element from resourceLogs
 		resourceLogs.RemoveIf(func(rl plog.ResourceLogs) bool { return resourceLogs.At(0) != rl })
