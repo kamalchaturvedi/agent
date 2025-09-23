@@ -129,6 +129,7 @@ func (p *logsGzipProcessor) filterSupportedLogRecords(logRecords plog.LogRecordS
 	logRecords.RemoveIf(func(l plog.LogRecord) bool {
 		if l.Body().Type() == pcommon.ValueTypeStr {
 			parsedLogInput := l.Body().Str()
+			p.settings.Logger.Debug("Original log record", zap.String("log", parsedLogInput))
 			if idx := strings.Index(parsedLogInput, " ASM:"); idx != -1 && idx < 50 {
 				// Only strip if ASM: is near the start (syslog prefix is usually short)
 				parsedLogInput = parsedLogInput[idx+len(" ASM:"):]
