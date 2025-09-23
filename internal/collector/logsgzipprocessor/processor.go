@@ -187,9 +187,10 @@ func combineViolations(violations []string) string {
 
 // replaceWithGzippedLogRecord empties logRecords and adds a single logRecord with gzipped content
 func replaceWithGzippedLogRecord(logRecords plog.LogRecordSlice, gzipped []byte) {
-	record := logRecords.AppendEmpty()
-	// Set timestamps to zero, or could copy from previous if needed
-	record.SetTimestamp(pcommon.NewTimestampFromTime(record.Timestamp().AsTime()))
-	record.SetObservedTimestamp(pcommon.NewTimestampFromTime(record.ObservedTimestamp().AsTime()))
+	// Clear existing log records
+	logRecords.RemoveIf(func(lr plog.LogRecord) bool { return logRecords.At(0) != lr })
+
+	// Modify the first log record to contain the gzipped data of all log records
+	record := logRecords.At(0)
 	_ = record.Body().FromRaw(gzipped)
 }
