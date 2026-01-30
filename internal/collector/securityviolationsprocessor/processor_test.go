@@ -1076,22 +1076,6 @@ func TestSecurityViolationsProcessor_ExtractIPFromHostname(t *testing.T) {
 	assert.Empty(t, extractIPFromHostname("not-an-ip"))
 }
 
-func TestSplitAndTrim(t *testing.T) {
-	assert.Nil(t, splitAndTrim(""))
-	assert.Nil(t, splitAndTrim("N/A"))
-	assert.Equal(t, []string{"a", "b"}, splitAndTrim(" a , b "))
-}
-
-func TestBuildSignatures(t *testing.T) {
-	ids := []string{"1", "2"}
-	names := []string{"buf1", "buf2"}
-	sigs := buildSignatures(ids, names, "mask", "off", "len")
-	assert.Len(t, sigs, 2)
-	assert.Equal(t, uint32(1), sigs[0].GetSigDataId())
-	assert.Equal(t, "buf1", sigs[0].GetSigDataBuffer())
-	assert.Equal(t, "mask", sigs[0].GetSigDataBlockingMask())
-}
-
 func TestSetSyslogAttributesNilFields(t *testing.T) {
 	lr := plog.NewLogRecord()
 	m := &rfc3164.SyslogMessage{}

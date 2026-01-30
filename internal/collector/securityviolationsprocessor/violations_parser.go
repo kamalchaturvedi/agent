@@ -7,9 +7,9 @@ package securityviolationsprocessor
 
 import (
 	"encoding/base64"
-	"encoding/xml"
 	"fmt"
 	"strings"
+	"unicode/utf8"
 
 	events "github.com/nginx/agent/v3/api/grpc/events/v1"
 	"go.uber.org/zap"
@@ -31,15 +31,15 @@ func (p *securityViolationsProcessor) parseViolationsData(kvMap map[string]strin
 		return nil
 	}
 
-	// Parse XML violation details
-	var xmlData BADMSG
-	if err := xml.Unmarshal([]byte(violationDetails), &xmlData); err != nil {
+	// Parse XML violation details using fast byte-level lexer
+	xmlData, err := parseFastBADMSG(violationDetails)
+	if err != nil {
 		p.settings.Logger.Warn("Failed to parse XML violation details", zap.Error(err))
 		return nil
 	}
 
 	// Extract context from violation names if not present
-	p.extractViolationContext(&xmlData)
+	p.extractViolationContext(xmlData)
 
 	// Process each violation
 	violationsData := make([]*events.ViolationData, 0, len(xmlData.RequestViolations.Violations))
@@ -384,6 +384,10 @@ func (p *securityViolationsProcessor) tryDecodeBase64(encoded string) (string, e
 	if err != nil {
 		return "", err
 	}
+	// Protobuf strings cannot contain null bytes
+	if !isValidProtobufString(decoded) {
+		return encoded, nil // Return original base64 string
+	}
 
 	return string(decoded), nil
 }
@@ -411,17 +415,18 @@ func (p *securityViolationsProcessor) extractSignaturesFromXML(v *Violation) []*
 	for _, s := range v.SigData {
 		// Decode base64 buffer
 		buf, err := base64.StdEncoding.DecodeString(s.KwData.Buffer)
-		if err != nil {
-			p.settings.Logger.Warn("Failed to decode signature buffer",
-				zap.String("buffer", s.KwData.Buffer), zap.Error(err))
-
-			continue
+		bufferStr := s.KwData.Buffer // Default to base64 string
+		if err == nil {
+			// Only use decoded buffer if it's valid UTF-8 and doesn't contain null bytes
+			if utf8.ValidString(string(buf)) && isValidProtobufString(buf) {
+				bufferStr = string(buf)
+			}
 		}
 
 		signature := &events.SignatureData{
 			SigDataId:           parseUint32(s.SigID),
 			SigDataBlockingMask: s.BlockingMask,
-			SigDataBuffer:       string(buf),
+			SigDataBuffer:       bufferStr,
 			SigDataOffset:       parseUint32(s.KwData.Offset),
 			SigDataLength:       parseUint32(s.KwData.Length),
 		}

@@ -6,11 +6,49 @@
 package securityviolationsprocessor
 
 import (
+	"encoding/csv"
 	"strconv"
 	"strings"
 
 	events "github.com/nginx/agent/v3/api/grpc/events/v1"
 )
+
+// csvFieldOrder is pre-allocated at package level to avoid allocation on every call
+var csvFieldOrder = []string{
+	"blocking_exception_reason",
+	"dest_port",
+	"ip_client",
+	"is_truncated_bool",
+	"method",
+	"policy_name",
+	"protocol",
+	"request_status",
+	"response_code",
+	"severity",
+	"sig_cves",
+	"sig_set_names",
+	"src_port",
+	"sub_violations",
+	"support_id",
+	"threat_campaign_names",
+	"violation_rating",
+	"vs_name",
+	"x_forwarded_for_header_value",
+	"outcome",
+	"outcome_reason",
+	"violations",
+	"violation_details",
+	"bot_signature_name",
+	"bot_category",
+	"bot_anomalies",
+	"enforced_bot_anomalies",
+	"client_class",
+	"client_application",
+	"client_application_version",
+	"transport_protocol",
+	"uri",
+	"request",
+}
 
 // parseCSVLog parses comma-separated syslog messages where fields are in a
 // order : blocking_exception_reason,dest_port,ip_client,is_truncated_bool,method,policy_name,protocol,request_status,response_code,severity,sig_cves,sig_set_names,src_port,sub_violations,support_id,threat_campaign_names,violation_rating,vs_name,x_forwarded_for_header_value,outcome,outcome_reason,violations,violation_details,bot_signature_name,bot_category,bot_anomalies,enforced_bot_anomalies,client_class,client_application,client_application_version,transport_protocol,uri,request (secops_dashboard-log profile format).
@@ -18,72 +56,45 @@ import (
 //
 //nolint:lll //long test string kept for log profile readability
 func (p *securityViolationsProcessor) parseCSVLog(message string) map[string]string {
-	fieldValueMap := make(map[string]string)
+	fieldValueMap := make(map[string]string, 33)
 
 	// Remove the "ASM:" prefix if present so we only process the values
 	message = strings.TrimPrefix(message, "ASM:")
 
-	fields := strings.Split(message, ",")
+	// Use standard library CSV reader (lightweight, pooling not beneficial)
+	reader := csv.NewReader(strings.NewReader(message))
+	reader.FieldsPerRecord = -1    // Allow variable number of fields
+	reader.TrimLeadingSpace = true // Trim whitespace from fields
+	reader.LazyQuotes = true       // Allow bare quotes (data may not be properly CSV-escaped)
 
-	// Mapping of CSV field positions to their corresponding keys
-	fieldOrder := []string{
-		"blocking_exception_reason",
-		"dest_port",
-		"ip_client",
-		"is_truncated_bool",
-		"method",
-		"policy_name",
-		"protocol",
-		"request_status",
-		"response_code",
-		"severity",
-		"sig_cves",
-		"sig_set_names",
-		"src_port",
-		"sub_violations",
-		"support_id",
-		"threat_campaign_names",
-		"violation_rating",
-		"vs_name",
-		"x_forwarded_for_header_value",
-		"outcome",
-		"outcome_reason",
-		"violations",
-		"violation_details",
-		"bot_signature_name",
-		"bot_category",
-		"bot_anomalies",
-		"enforced_bot_anomalies",
-		"client_class",
-		"client_application",
-		"client_application_version",
-		"transport_protocol",
-		"uri",
-		"request",
+	fields, err := reader.Read()
+	if err != nil {
+		return fieldValueMap
 	}
 
 	for i, field := range fields {
-		if i >= len(fieldOrder) {
+		if i >= len(csvFieldOrder) {
 			break
 		}
-		fieldValueMap[fieldOrder[i]] = strings.TrimSpace(field)
+		fieldValueMap[csvFieldOrder[i]] = strings.TrimSpace(field)
 	}
 
-	// combine multiple values separated by '::'
+	// combine multiple values separated by '::' - optimized to avoid SplitN allocation
 	if combined, ok := fieldValueMap["sig_cves"]; ok {
-		parts := strings.SplitN(combined, "::", maxSplitParts)
-		fieldValueMap["sig_ids"] = parts[0]
-		if len(parts) > 1 {
-			fieldValueMap["sig_names"] = parts[1]
+		if idx := strings.Index(combined, "::"); idx >= 0 {
+			fieldValueMap["sig_ids"] = combined[:idx]
+			fieldValueMap["sig_names"] = combined[idx+2:]
+		} else {
+			fieldValueMap["sig_ids"] = combined
 		}
 	}
 
 	if combined, ok := fieldValueMap["sig_set_names"]; ok {
-		parts := strings.SplitN(combined, "::", maxSplitParts)
-		fieldValueMap["sig_set_names"] = parts[0]
-		if len(parts) > 1 {
-			fieldValueMap["sig_cves"] = parts[1]
+		if idx := strings.Index(combined, "::"); idx >= 0 {
+			fieldValueMap["sig_set_names"] = combined[:idx]
+			fieldValueMap["sig_cves"] = combined[idx+2:]
 		}
+		// If no "::", keep original value in sig_set_names
 	}
 
 	return fieldValueMap

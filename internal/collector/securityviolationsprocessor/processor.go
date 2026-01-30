@@ -9,6 +9,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
+	"regexp"
+	"strings"
 	"time"
 
 	syslog "github.com/leodido/go-syslog/v4"
@@ -24,10 +27,8 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const (
-	notAvailable  = "N/A"
-	maxSplitParts = 2
-)
+// ipHostnameRegex is compiled once and reused to avoid allocation on every call
+var ipHostnameRegex = regexp.MustCompile(`^ip-([0-9-]+)`)
 
 // securityViolationsProcessor parses syslog-formatted log records and annotates
 // them with structured SecurityEvent attributes.
@@ -205,4 +206,19 @@ func (p *securityViolationsProcessor) assignHostnames(log *events.SecurityViolat
 			log.ServerAddr = ip
 		}
 	}
+}
+
+func extractIPFromHostname(hostname string) string {
+	if ip := net.ParseIP(hostname); ip != nil {
+		return ip.String()
+	}
+
+	if matches := ipHostnameRegex.FindStringSubmatch(hostname); len(matches) > 1 {
+		candidate := strings.ReplaceAll(matches[1], "-", ".")
+		if net.ParseIP(candidate) != nil {
+			return candidate
+		}
+	}
+
+	return ""
 }

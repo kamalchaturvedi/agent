@@ -44,6 +44,8 @@ func BenchmarkSecurityViolationsProcessor(b *testing.B) {
 		message    string
 		numRecords int
 	}{
+		{name: "AppProtect_1", message: sampleAppProtectSyslog, numRecords: 1},
+		{name: "AppProtect_10", message: sampleAppProtectSyslog, numRecords: 10},
 		{name: "AppProtect_100", message: sampleAppProtectSyslog, numRecords: 100},
 		{name: "AppProtect_1000", message: sampleAppProtectSyslog, numRecords: 1000},
 	}
@@ -51,11 +53,14 @@ func BenchmarkSecurityViolationsProcessor(b *testing.B) {
 	for _, bm := range benchmarks {
 		b.Run(bm.name, func(b *testing.B) {
 			p := newBenchmarkProcessor()
-			logs := generateSecurityViolationLogs(bm.numRecords, bm.message)
+			originalLogs := generateSecurityViolationLogs(bm.numRecords, bm.message)
 
 			b.ReportAllocs()
 			b.ResetTimer()
 			for range b.N {
+				// Copy logs to avoid mutating the same object
+				logs := plog.NewLogs()
+				originalLogs.CopyTo(logs)
 				_ = p.ConsumeLogs(context.Background(), logs)
 			}
 		})
@@ -64,7 +69,7 @@ func BenchmarkSecurityViolationsProcessor(b *testing.B) {
 
 func BenchmarkSecurityViolationsProcessor_Concurrent(b *testing.B) {
 	p := newBenchmarkProcessor()
-	logs := generateSecurityViolationLogs(200, sampleAppProtectSyslog)
+	logs := generateSecurityViolationLogs(1000, sampleAppProtectSyslog)
 
 	b.ReportAllocs()
 	b.ResetTimer()
